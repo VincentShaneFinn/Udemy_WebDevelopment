@@ -33,6 +33,7 @@ TestResults/
 # Resharper #
 #############
 /_ReSharper.*
+/.vs.*
 *.ReSharper.*
 ############
 # Packages #
