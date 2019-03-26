@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ExploreCalifornia.Controllers
 {
+    //Normally you would do  [blog/Route("{year:min(2000)}/{month:range(1,12)}/{key}")], but not longer
     [Route("blog")]
     public class BlogController : Controller
     {
