@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cypher Marketing</title>
+    <link href="Content/bootstrap.css" rel="stylesheet" />
+    <link href="Content/font-awesome.css" rel="stylesheet" />
+    <link href="Content/sb-admin-2.css" rel="stylesheet" />
+    <link href="Content/custom.css" rel="stylesheet" />
+
+    <script src="Scripts/jquery-1.10.2.js"></script>
+    <script src="Scripts/jquery.validate.js"></script>
+    <script src="Scripts/jquery.validate.unobtrusive.js"></script>
+</head>
+<body>
+    <div id="wrapper">
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" style="font-size: 1.5em" href="/">Cypher Marketing (MVC)</a>
+            </div>
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <br />
+                    <ul class="nav" id="side-menu">
+                        <li>
+                            <span><i class="fa fa-edit fa-fw"></i> Messages</span>
+                            <ul class="nav nav-second-level in">
+                                <li>
+                                    <a href="/Messages/ViewMessages">View Messages</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span><i class="fa fa-edit fa-fw"></i> Tasks</span>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="/Task/CreateEditTask">Create Task</a>
+                                </li>
+                                <li>
+                                    <a href="/Task/ViewTasks">View Tasks</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+		<!-- Begin Page Wrapper -->
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h2>Reply To: Concerned Customer</h2>
+                    <div class="thread-item">
+                        <p>mark@sample.com</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla consequat neque sed massa sagittis, sed varius lorem faucibus. Nunc nec lacus sed magna vehicula interdum. Aliquam orci erat, rutrum vel scelerisque ultrices, venenatis vitae leo. Sed sed sagittis felis, in iaculis risus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        <p>1/17/2016 11:01:39 AM</p>
+                    </div>
+                    <div class="thread-item">
+                        <p>mark@sample.com</p>
+                        <p>Neque sed massa sagittis, sed varius lorem faucibus. Nunc nec lacus sed magna vehicula interdum. Aliquam orci erat, rutrum vel scelerisque ultrices, venenatis vitae leo. Sed sed sagittis felis, in iaculis risus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        <p>1/17/2016 11:01:39 AM</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <form action="/Messages/ReplyMessage/1" method="post">
+                        <input id="Subject" name="Subject" type="hidden" value="Concerned Customer" />            <div class="form-group">
+                            <label>Reply Content</label>
+                            <textarea class="form-control" cols="20" id="Content" name="Content" rows="10"></textarea>
+                        </div>
+                        <input data-val="true" data-val-number="The field MessageThreadId must be a number." data-val-required="The MessageThreadId field is required." id="MessageThreadId" name="MessageThreadId" type="hidden" value="1" />                <div class="form-group">
+                            <input class="btn btn-primary pull-right" type="submit" text="Submit">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+		<!-- End Page Wrapper -->
+    </div>
+</body>
+</html>

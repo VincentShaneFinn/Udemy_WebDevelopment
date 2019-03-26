@@ -1,0 +1,102 @@
+﻿<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            Welcome to the Feedback Application! <br />
+            <small>Here you can manage the messages and tasks for our customers.</small>
+        </h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="panel panel-yellow">
+            <div class="panel-heading">
+                Latest Messages
+            </div>
+            <div class="panel-body">
+                <table class="table table-responsive list-view">
+                    <thead>
+                        <tr>
+                            <th>From</th>
+                            <th>Subject</th>
+                            <th>Sent</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>mark@sample.com</td>
+                            <td>Concerned Customer</td>
+                            <td>1/17/2016 11:01:39 AM</td>
+                            <td><a href="/Messages/ReplyMessage/3">View</a></td>
+                        </tr>
+                        <tr>
+                            <td>joe@sample.com</td>
+                            <td>Question about shipping</td>
+                            <td>1/17/2016 11:01:39 AM</td>
+                            <td><a href="/Messages/ReplyMessage/4">View</a></td>
+                        </tr>
+                        <tr>
+                            <td>sam@sample.com</td>
+                            <td>Mobile app troubles</td>
+                            <td>1/17/2016 11:01:39 AM</td>
+                            <td><a href="/Messages/ReplyMessage/5">View</a></td>
+                        </tr>
+                        <tr>
+                            <td>alex@sample.com</td>
+                            <td>Poor service</td>
+                            <td>1/17/2016 11:01:39 AM</td>
+                            <td><a href="/Messages/ReplyMessage/6">View</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel-footer">
+                <a class="pull-right btn btn-primary" href="/Messages/ViewMessages">See all</a> <br />
+                <span class="clearfix"></span>
+            </div>
+        </div>
+        <div class="panel panel-red">
+            <div class="panel-heading">
+                Admin Tasks
+            </div>
+            <div class="panel-body">
+                <table class="table table-responsive list-view">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Due Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Follow up with marketing about materials</td>
+                            <td>A vendor has not received shipments for an order they placed through the online form.</td>
+                            <td>1/24/2016 11:01:39 AM</td>
+                            <td><a href="/Task/CreateEditTask/1">View</a></td>
+                        </tr>
+                        <tr>
+                            <td>Vendor issues</td>
+                            <td>A vendor has not received their order, please address this and check that the order was placed.</td>
+                            <td>1/24/2016 11:01:39 AM</td>
+                            <td><a href="/Task/CreateEditTask/2">View</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel-footer">
+                <a class="pull-right btn btn-primary" href="/Home/ViewTasks?Length=4">See all</a>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="col-sm-12">
+            @Html.Action("Survey")
+        </div>
+        <div class="col-sm-12">
+            @Html.Action("Suggestion")
+        </div>
+    </div>
+</div>
