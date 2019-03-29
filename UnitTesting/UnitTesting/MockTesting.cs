@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Moq;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -23,6 +25,24 @@ namespace UnitTesting
         {
             log.write($"User has deposited {amount}");
             Balance += amount;
+        }
+    }
+
+    [TestFixture]
+    public class BankAccountMockTests
+    {
+
+        private BankAccountForMock ba;
+
+        [Test]
+        public void DepositTest()
+        {
+            var log = new Mock<ILogForMock>();
+            ba = new BankAccountForMock(log.Object) { Balance = 100 };
+
+            ba.Deposit(100);
+
+            Assert.That(ba.Balance, Is.EqualTo(200));
         }
     }
 }
