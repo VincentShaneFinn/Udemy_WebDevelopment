@@ -1,4 +1,5 @@
 ﻿using JetBrains.dotMemoryUnit;
+using JetBrains.dotMemoryUnit.Kernel;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -37,23 +38,26 @@ namespace UnitTesting
         [Test]
         public void MemoryTest()
         {
-            var checkpoint1 = dotMemory.Check();
-
-            // ... manipulations
-
-            var checkpoint2 = dotMemory.Check(memory =>
+            if (dotMemoryApi.IsEnabled)
             {
-                Assert.That(memory.GetTrafficFrom(checkpoint1)
-                    .Where(obj => obj.Interface.Is<IEnumerable<int>>())
-                    .AllocatedMemory.SizeInBytes, Is.LessThan(1000));
-            });
+                var checkpoint1 = dotMemory.Check();
 
-            dotMemory.Check(memory =>
-            {
-                Assert.That(memory.GetObjects(
-                    where => where.Type.Is<QuadraticTest>()
-                    ).ObjectsCount, Is.EqualTo(0));
-            });
+                // ... manipulations
+
+                var checkpoint2 = dotMemory.Check(memory =>
+                {
+                    Assert.That(memory.GetTrafficFrom(checkpoint1)
+                        .Where(obj => obj.Interface.Is<IEnumerable<int>>())
+                        .AllocatedMemory.SizeInBytes, Is.LessThan(1000));
+                });
+
+                dotMemory.Check(memory =>
+                {
+                    Assert.That(memory.GetObjects(
+                        where => where.Type.Is<QuadraticTest>()
+                        ).ObjectsCount, Is.EqualTo(0));
+                });
+            }
         }
     }
 }

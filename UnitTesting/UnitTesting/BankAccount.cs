@@ -2,16 +2,35 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ImpromptuInterface;
 
 namespace UnitTesting
 {
+
+    public interface ILog
+    {
+        bool write(string msg);
+    }
+
+
+    public class ConsoleLog : ILog
+    {
+        public bool write(string msg)
+        {
+            Console.WriteLine(msg);
+            return true;
+        }
+    }
+
     class BankAccount
     {
 
         public int Balance { get; private set; }
-        public BankAccount(int startingBalance)
+        private readonly ILog log;
+        public BankAccount(int startingBalance, ILog log = null)
         {
             Balance = startingBalance;
+            this.log = log;
         }
 
         public void Deposit(int amount)
@@ -20,7 +39,15 @@ namespace UnitTesting
             {
                 throw new ArgumentException("Non Positive Number", nameof(amount));
             }
-            Balance += amount;
+            bool logSuccessful = true;
+            if (log != null)
+            {
+                logSuccessful = log.write($"Depositing {amount}");
+            }
+            if (logSuccessful)
+            {
+                Balance += amount;
+            }
         }
 
         public bool withdraw(int amount)
@@ -131,4 +158,75 @@ namespace UnitTesting
         }
 
     }
+
+    public class NullLog : ILog
+    {
+        public bool write(string msg)
+        {
+            return true;
+        }
+    }
+
+    public class NullLogWithResult : ILog
+    {
+        private bool expectedResult;
+
+        public NullLogWithResult(bool expectedResult)
+        {
+            this.expectedResult = expectedResult;
+        }
+
+        public bool write(string msg)
+        {
+            return expectedResult;
+        }
+    }
+
+    [TestFixture]
+    public class BankAccountLogTests
+    {
+        private BankAccount ba;
+
+        public void DepositIntegrationFake() {
+            var log = new NullLog();
+            ba = new BankAccount(100, log);
+            ba.Deposit(100);
+            Assert.That(ba.Balance, Is.EqualTo(200));
+        }
+
+        public void DepositIntegrationStub() {
+            var log = new NullLogWithResult(true);
+            ba = new BankAccount(100, log);
+            ba.Deposit(100);
+            Assert.That(ba.Balance, Is.EqualTo(200));
+        }
+
+        //public void DepositDynamicFakeTest() {
+        //    var log = Null<ILog>.Instance;
+        //    ba = new BankAccount(100, log);
+        //    ba.Deposit(100);
+        //    Assert.That(ba.Balance, Is.EqualTo(200));
+        //}
+
+    }
+
+    //Returns the default value of the method you are trying to call
+    //public class Null<T> : DynamicObject where T : class
+    //{
+
+    //  public static T Instance
+    //  {
+    //    get
+    //    {
+    //        return new Null<T>().ActLike<T>();
+    //    }
+    //  }
+
+    //    public override bool TryInvokeMember(invokeMemberBinder binder, object[] args, out object result)
+    //    {
+    //        result = Activator.CreateInstance(typeof(T).GetMethod(binder.name).ReturnType);
+    //        return true;
+    //    }
+    //}
+
 }
