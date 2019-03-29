@@ -182,6 +182,36 @@ namespace UnitTesting
         }
     }
 
+    public class LogMock : ILog
+    {
+        private bool expectedResult;
+        public Dictionary<string, int> MethodCallCount;
+
+        public LogMock(bool expectedResult)
+        {
+            this.expectedResult = expectedResult;
+            MethodCallCount = new Dictionary<string, int>();
+        }
+
+        private void AddOrIncrememnt(string methodName)
+        {
+            if (MethodCallCount.ContainsKey(methodName))
+            {
+                MethodCallCount[methodName]++;
+            }
+            else
+            {
+                MethodCallCount.Add(methodName, 1);
+            }
+        }
+
+        public bool write(string msg)
+        {
+            AddOrIncrememnt(nameof(write));
+            return expectedResult;
+        }
+
+    }
     [TestFixture]
     public class BankAccountLogTests
     {
@@ -199,6 +229,17 @@ namespace UnitTesting
             ba = new BankAccount(100, log);
             ba.Deposit(100);
             Assert.That(ba.Balance, Is.EqualTo(200));
+        }
+
+        public void DepositIntegrationWithMock() {
+            var log = new LogMock(true);
+            ba = new BankAccount(100, log);
+            ba.Deposit(100);
+            Assert.Multiple(() =>
+            {
+                Assert.That(ba.Balance, Is.EqualTo(200));
+                Assert.That(log.MethodCallCount[nameof(LogMock.write)], Is.EqualTo(1));
+            });
         }
 
         //public void DepositDynamicFakeTest() {
