@@ -133,5 +133,145 @@ namespace UnitTesting
                  mock.Object.DoSomething(null), "cmd");
 
         }
+
+        [Test]
+        public void PropertyMockingBasics()
+        {
+            var mock = new Mock<IFoo>();
+
+            mock.Setup(foo => foo.Name).Returns("bar");
+            mock.Object.Name = "Will not be assigned";
+            Assert.That(mock.Object.Name, Is.EqualTo("bar"));
+
+            mock.Setup(foo => foo.SomeBaz.Name).Returns("hello");
+            Assert.That(mock.Object.SomeBaz.Name, Is.EqualTo("hello"));
+
+            //Mock a setter
+            bool setterCalled = false;
+
+            mock.SetupSet(foo =>
+            {
+                foo.Name = It.IsAny<string>();
+            }).Callback<string>(value =>
+            {
+                setterCalled = true;
+            });
+
+            mock.Object.Name = "anotherBar";
+
+            mock.VerifySet(foo =>
+            {
+                foo.Name = "anotherBar";
+            }, Times.AtLeastOnce);
+
+            Assert.IsTrue(setterCalled);
+        }
+
+        [Test]
+        public void PropertyMockingAdvanced()
+        {
+            var mock = new Mock<IFoo>();
+
+            //Stub all properties
+            mock.SetupAllProperties();
+
+            //A single property setup
+            //mock.SetupProperty(foo => foo.Name);
+
+            IFoo fooObj = mock.Object;
+
+            fooObj.Name = "bar";
+            Assert.That(mock.Object.Name, Is.EqualTo("bar"));
+        }
+
+        public delegate void AlienAbductionHandler(int galaxy, bool returned);
+
+
+        public interface IAnimal
+        {
+            event EventHandler FallsIll;
+            void Stumble();
+
+            event AlienAbductionHandler AbuctedByAlient;
+        }
+
+        public class Doctor
+        {
+            public Doctor(IAnimal animal)
+            {
+                animal.FallsIll += (sender, args) =>
+                {
+                    Console.WriteLine("I Will Cure you");
+                    TimesCured++;
+                };
+
+                animal.AbuctedByAlient += (galaxy, returned) => AbductionsObserverd++;
+            }
+
+            public int TimesCured { get; private set; }
+            public int AbductionsObserverd { get; set; }
+        }
+
+        [Test]
+        public void DoctorTests()
+        {
+            var mock = new Mock<IAnimal>();
+            var doctor = new Doctor(mock.Object);
+
+            mock.Raise(
+                a => a.FallsIll += null,
+                new EventArgs()
+            );
+
+            Assert.That(doctor.TimesCured, Is.EqualTo(1));
+            mock.Setup(a => a.Stumble()).Raises(
+                a => a.FallsIll += null,
+                new EventArgs()
+            );
+
+            mock.Object.Stumble();
+
+            Assert.That(doctor.TimesCured, Is.EqualTo(2));
+
+
+            mock.Raise(
+                a => a.AbuctedByAlient += null,
+                42,
+                true
+            );
+
+            Assert.That(doctor.AbductionsObserverd, Is.EqualTo(1));
+        }
+
+
+        [Test]
+        public void CallbackTesting()
+        {
+            var mock = new Mock<IFoo>();
+
+            int x = 0;
+            mock.Setup(foo => foo.DoSomething("ping"))
+                .Returns(true)
+                .Callback(() => x++);
+
+            mock.Object.DoSomething("ping");
+
+            Assert.That(x, Is.EqualTo(1));
+
+            mock.Setup(foo => foo.DoSomething(It.IsAny<string>()))
+                .Returns(true)
+                .Callback((string s) => x += s.Length);
+
+            //Same thing
+            //mock.Setup(foo => foo.DoSomething(It.IsAny<string>()))
+            //    .Returns(true)
+            //    .Callback<string>(s => x += s.Length);
+
+            mock.Setup(foo => foo.DoSomething("pong"))
+                .Callback(() => Console.WriteLine("Before Return"))
+                .Returns(true)
+                .Callback((string s) => x += s.Length);
+        }
     }
+
 }
