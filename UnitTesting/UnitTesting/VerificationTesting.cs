@@ -82,6 +82,8 @@ namespace UnitTesting
             mock.Verify(foo => foo.DoSomething("pong"), Times.Never);
 
             mock.VerifyGet(foo => foo.Name);
+
+            mock.VerifySet(foo => foo.SomeOtherProperty = It.IsInRange(100, 200, Range.Inclusive));
         }
     }
 }
