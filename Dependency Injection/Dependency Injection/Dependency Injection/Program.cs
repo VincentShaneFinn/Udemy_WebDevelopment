@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Autofac.Core;
 using System;
 using System.Collections.Generic;
 
@@ -74,21 +75,74 @@ namespace Dependency_Injection
         }
     }
 
+    public class SMSLog : ILog
+    {
+        string phoneNumber;
+
+        public SMSLog(string phoneNumber)
+        {
+            this.phoneNumber = phoneNumber;
+        }
+
+        public void Write(string message)
+        {
+            Console.WriteLine($"SMS to {phoneNumber} : {message}");
+        }
+    }
+
+    public class Parent
+    {
+        public override string ToString()
+        {
+            return "I am your father";
+        }
+    }
+
+    public class Child
+    {
+        public string Name { get; set; }
+        public Parent Parent { get; set; }
+
+        public void SetParent(Parent parent)
+        {
+            this.Parent = parent;
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
         {
             var builder = new ContainerBuilder();
 
-            // IList<T> --> List<T>
-            // IList<int> --> List<int>
+            builder.RegisterType<Parent>();
 
-            builder.RegisterGeneric(typeof(List<>)).As(typeof(IList<>));
+            //Property Injection
 
-            IContainer container = builder.Build();
+            //builder.RegisterType<Child>().PropertiesAutowired();
+            //builder.RegisterType<Child>().WithProperty("Parent", new Parent());
 
-            var myList = container.Resolve<IList<int>>();
-            Console.WriteLine(myList.GetType());
+
+            //Method Injection
+
+            //builder.Register((c =>
+            //{
+            //    var child = new Child();
+            //    child.SetParent(c.Resolve<Parent>());
+            //    return child;
+            //}));
+
+            builder.RegisterType<Child>().OnActivated(e =>
+            {
+                var p = e.Context.Resolve<Parent>();
+                e.Instance.SetParent(p);
+            });
+
+            var container = builder.Build();
+
+            var parent = container.Resolve<Child>().Parent;
+
+            Console.WriteLine(parent);
         }
     }
 }
