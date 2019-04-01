@@ -2,6 +2,8 @@
 using Autofac.Core;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using Module = Autofac.Module;
 
 namespace Dependency_Injection
 {
@@ -109,40 +111,37 @@ namespace Dependency_Injection
         }
     }
 
+    public class ParentChildModule: Module
+    {
+        protected override void Load(ContainerBuilder builder)
+        {
+            builder.RegisterType<Parent>();
+            builder.Register(c => new Child() { Parent = c.Resolve<Parent>() });
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
         {
+            //var assembly = Assembly.GetExecutingAssembly();
+            //var builder = new ContainerBuilder();
+            ////register all logs exept sms log, and if Console log, make it a singleton instance
+            //builder.RegisterAssemblyTypes(assembly).Where(t => t.Name.EndsWith("Log"))
+            //    .Except<SMSLog>()
+            //    .Except<ConsoleLog>(c => c.As<ILog>().SingleInstance())
+            //    .AsSelf();
+
+            ////get register to the first interface they implement
+            //builder.RegisterAssemblyTypes(assembly).Except<SMSLog>().Where(t => t.Name.EndsWith("Log")).As(t => t.GetInterfaces()[0]);
+
             var builder = new ContainerBuilder();
-
-            builder.RegisterType<Parent>();
-
-            //Property Injection
-
-            //builder.RegisterType<Child>().PropertiesAutowired();
-            //builder.RegisterType<Child>().WithProperty("Parent", new Parent());
-
-
-            //Method Injection
-
-            //builder.Register((c =>
-            //{
-            //    var child = new Child();
-            //    child.SetParent(c.Resolve<Parent>());
-            //    return child;
-            //}));
-
-            builder.RegisterType<Child>().OnActivated(e =>
-            {
-                var p = e.Context.Resolve<Parent>();
-                e.Instance.SetParent(p);
-            });
+            builder.RegisterAssemblyModules(typeof(Program).Assembly);
+            builder.RegisterAssemblyModules<ParentChildModule>(typeof(Program).Assembly);
 
             var container = builder.Build();
 
-            var parent = container.Resolve<Child>().Parent;
-
-            Console.WriteLine(parent);
+            Console.WriteLine(container.Resolve<Child>().Parent);
         }
     }
 }
