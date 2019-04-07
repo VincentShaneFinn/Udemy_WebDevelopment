@@ -1,0 +1,37 @@
+using System;
+using LandonHotel.Data;
+using LandonHotel.Repositories;
+using LandonHotel.Services;
+using Moq;
+using Xunit;
+
+namespace LandonHotel.Tests
+{
+    public class BookingServiceTests
+    {
+        private Mock<IRoomsRepository> roomRepo;
+
+        public BookingServiceTests()
+        {
+            roomRepo = new Mock<IRoomsRepository>();
+        }
+
+        public BookingService Subject()
+        {
+            return new BookingService(roomRepo.Object);
+        }
+
+        [Fact]
+        public void CalculateBookingPrice_CalculatesCorrectly()
+        {
+            var service = Subject();
+
+            roomRepo.Setup(r => r.GetRoom(1)).Returns(new Room { Rate = 250 });
+
+            var price = service.CalculateBookingPrice(new Booking { RoomId = 1, CheckInDate = DateTime.Now, CheckOutDate = DateTime.Now.AddDays(2) });
+
+            Assert.Equal(500, price);
+        }
+
+    }
+}

@@ -1,0 +1,32 @@
+        [Fact]
+        public void IsBookingValid_PetsAllowed_IsValid()
+        {
+            var service = Subject();
+            _roomRepo.Setup(r => r.GetRoom(1)).Returns(new Room { ArePetsAllowed = true });
+
+            var isValid = service.IsBookingValid(1, new Booking { HasPets = true });
+
+            Assert.True(isValid);
+        }
+
+        [Fact]
+        public void IsBookingValid_NoPetsAllowed_IsValid()
+        {
+            var service = Subject();
+            _roomRepo.Setup(r => r.GetRoom(1)).Returns(new Room { ArePetsAllowed = true });
+
+            var isValid = service.IsBookingValid(1, new Booking { HasPets = false });
+
+            Assert.True(isValid);
+        }
+
+        [Fact]
+        public void IsBookingValid_NoPetsNotAllowed_IsValid()
+        {
+            var service = Subject();
+            _roomRepo.Setup(r => r.GetRoom(1)).Returns(new Room { ArePetsAllowed = false });
+
+            var isValid = service.IsBookingValid(1, new Booking { HasPets = false });
+
+            Assert.True(isValid);
+        }
